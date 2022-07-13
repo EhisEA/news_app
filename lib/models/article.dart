@@ -4,7 +4,7 @@
 class Article {
   String title;
   ArticleSource source;
-  String image;
+  String? image;
   String content;
   DateTime publishedAt;
 
@@ -19,8 +19,8 @@ class Article {
   factory Article.fromJson(Map<String, dynamic> json) {
     return Article(
       title: json["title"],
-      image: json["image"],
-      content: json["content"],
+      image: json["urlToImage"],
+      content: json["content"] ?? "",
       publishedAt: DateTime.parse(json["publishedAt"]).toLocal(),
       source: ArticleSource.fromJson(json["source"]),
     );
@@ -40,11 +40,10 @@ class Article {
 }
 
 class ArticleSource {
-  String id;
   String name;
 
-  ArticleSource({required this.id, required this.name});
+  ArticleSource({required this.name});
 
   factory ArticleSource.fromJson(Map<String, dynamic> json) =>
-      ArticleSource(id: json["id"], name: json["name"]);
+      ArticleSource(name: json["name"]);
 }

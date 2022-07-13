@@ -17,8 +17,7 @@ class ArticleService {
 
   Future<List<Article>> _getArticleFromServer(Uri url) async {
     final http.Response response = await http.get(url);
-    final List<Map<String, dynamic>> result =
-        jsonDecode(response.body)["articles"];
+    final List result = jsonDecode(response.body)["articles"];
     return result.map<Article>((item) => Article.fromJson(item)).toList();
   }
 }
