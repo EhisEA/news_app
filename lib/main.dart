@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:news_app/views/home_view.dart';
+import 'package:news_app/views/home/home_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,6 +17,6 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.deepOrange,
           primaryColor: const Color(0xffFC821E),
         ),
-        home: const HomeView());
+        home: HomeView());
   }
 }

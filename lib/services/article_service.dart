@@ -4,8 +4,8 @@ import 'package:news_app/constants/api_routes.dart';
 import 'package:news_app/models/article.dart';
 import 'package:http/http.dart' as http;
 
-class ArtcleService {
-  Future<List<Article>> getArticles() async {
+class ArticleService {
+  Future<List<Article>> getTopArticles() async {
     final Uri url = Uri.parse(ApiRoute.topHeadlines);
     return _getArticleFromServer(url);
   }
