@@ -12,14 +12,35 @@ class ArticleDisplay extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: AspectRatio(
-              aspectRatio: 3 / 2,
-              child: Hero(
-                tag: article.title,
-                child: CachedImage(
-                  image: article.image!,
-                ),
-              ),
+            child: OrientationBuilder(
+              builder: (context, orientation) {
+                final Widget image = Hero(
+                  tag: article.title,
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    height: 110,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Colors.grey.shade300),
+                    child: article.image == null
+                        ? const Icon(
+                            Icons.image,
+                            color: Colors.white,
+                            size: 50,
+                          )
+                        : CachedImage(
+                            image: article.image!,
+                          ),
+                    width: 100,
+                  ),
+                );
+
+                //build ui
+                if (Orientation.landscape != orientation) {
+                  return AspectRatio(aspectRatio: 3 / 2, child: image);
+                }
+                return image;
+              },
             ),
           ),
           SliverPadding(

@@ -26,17 +26,21 @@ class Article {
     );
   }
 
-  // declartion() {
-  //   final article = Article(
-  //     title: "show me",
-  //     image: "https:image.om",
-  //     content: "a lot of text",
-  //     publishedAt: DateTime.now(),
-  //     source: ArticleSource(id: "rnrnirn", name: "i wrote this"),
-  //   );
-  //   article.image;
-  //   article.publishedAt;
-  // }
+  @override
+  operator ==(covariant Article other) =>
+      other.image == image &&
+      other.content == content &&
+      other.publishedAt == publishedAt &&
+      other.title == title &&
+      other.source == source;
+
+  @override
+  int get hashCode =>
+      image.hashCode ^
+      content.hashCode ^
+      publishedAt.hashCode ^
+      title.hashCode ^
+      source.hashCode;
 }
 
 class ArticleSource {
@@ -46,4 +50,10 @@ class ArticleSource {
 
   factory ArticleSource.fromJson(Map<String, dynamic> json) =>
       ArticleSource(name: json["name"]);
+
+  @override
+  operator ==(covariant ArticleSource other) => other.name == name;
+
+  @override
+  int get hashCode => name.hashCode;
 }

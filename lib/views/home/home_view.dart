@@ -18,6 +18,7 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
+  int selectedIndex = 0;
   @override
   void initState() {
     widget.homeViewModel.getTopHeadlines();
@@ -27,74 +28,105 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+          onTap: (tappedIndex) {
+            setState(() {
+              selectedIndex = tappedIndex;
+            });
+          },
+          currentIndex: selectedIndex,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.bookmark), label: "Bookmark"),
+          ]),
       body: SafeArea(
-        child: DefaultTabController(
-          length: ArticlesCategory.values.length + 1,
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: Ink.image(
-                  image: const AssetImage("assets/images/logo.png"),
-                  height: 40,
-                  width: 100,
-                ),
-              ),
-              const SizedBox(height: 16),
-              TabBar(
-                indicatorSize: TabBarIndicatorSize.label,
-                isScrollable: true,
-                tabs: [
-                  const Text("All news"),
-                  for (ArticlesCategory item in ArticlesCategory.values)
-                    Tab(
-                        // iconMargin: EdgeInsets.all(0),
-                        height: 20,
-                        text: item.name.capitaliseFirstLetter())
-                ],
-              ),
-              const SizedBox(height: 16),
-              Expanded(
-                child: TabBarView(
+        child: selectedIndex == 1
+            ? ListView.builder(
+                itemCount: widget.homeViewModel.bookmark.length,
+                itemBuilder: (context, index) {
+                  final article = widget.homeViewModel.bookmark[index];
+                  return ArticleWidget(article: article);
+                },
+              )
+            : DefaultTabController(
+                length: ArticlesCategory.values.length + 1,
+                child: Column(
                   children: [
-                    AnimatedBuilder(
-                      animation: widget.homeViewModel,
-                      builder: (context, _) {
-                        return CustomScrollView(
-                          slivers: [
-                            SliverToBoxAdapter(
-                              child: Text("Top Headlines",
-                                  style: Theme.of(context).textTheme.headline5),
-                            ),
-                            SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  final article =
-                                      widget.homeViewModel.topHeadlines[index];
-                                  return ArticleWidget(
-                                    article: article,
-                                  ); // return Text(homeViewModel.topHeadlines[index].title);
-                                },
-                                childCount:
-                                    widget.homeViewModel.topHeadlines.length,
-                              ),
-                            )
-                          ],
-                        );
-                      },
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Ink.image(
+                        image: const AssetImage("assets/images/logo.png"),
+                        height: 40,
+                        width: 100,
+                      ),
                     ),
-                    for (ArticlesCategory item in ArticlesCategory.values)
-                      // Tab(item.name);
-                      CategoryView(
-                        category: item.name,
-                        categoryViewModel: CategoryViewModel(item.name),
-                      )
+                    const SizedBox(height: 16),
+                    TabBar(
+                      indicatorSize: TabBarIndicatorSize.label,
+                      isScrollable: true,
+                      tabs: [
+                        const Text("All news"),
+                        for (ArticlesCategory item in ArticlesCategory.values)
+                          Tab(
+                              // iconMargin: EdgeInsets.all(0),
+                              height: 20,
+                              text: item.name.capitaliseFirstLetter())
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          AnimatedBuilder(
+                            animation: widget.homeViewModel,
+                            builder: (context, _) {
+                              return CustomScrollView(
+                                slivers: [
+                                  SliverToBoxAdapter(
+                                    child: Text("Top Headlines",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline5),
+                                  ),
+                                  SliverList(
+                                    delegate: SliverChildBuilderDelegate(
+                                      (context, index) {
+                                        final article = widget
+                                            .homeViewModel.topHeadlines[index];
+                                        final bool isBookmarked = widget
+                                            .homeViewModel.bookmark
+                                            .contains(article);
+                                        return ArticleWidget(
+                                          article: article,
+                                          isBookmarked: isBookmarked,
+                                          onBookmark: isBookmarked
+                                              ? widget.homeViewModel
+                                                  .removeFromBookmark
+                                              : widget
+                                                  .homeViewModel.addToBookmark,
+                                        ); // return Text(homeViewModel.topHeadlines[index].title);
+                                      },
+                                      childCount: widget
+                                          .homeViewModel.topHeadlines.length,
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                          for (ArticlesCategory item in ArticlesCategory.values)
+                            // Tab(item.name);
+                            CategoryView(
+                              category: item.name,
+                              categoryViewModel: CategoryViewModel(item.name),
+                            )
+                        ],
+                      ),
+                    )
                   ],
                 ),
-              )
-            ],
-          ),
-        ),
+              ),
       ),
     );
   }

@@ -7,10 +7,14 @@ import 'package:flutter/material.dart';
 class ArticleWidget extends StatelessWidget {
   const ArticleWidget({
     Key? key,
+    this.onBookmark,
+    this.isBookmarked = false,
     required this.article,
   }) : super(key: key);
 
   final Article article;
+  final bool isBookmarked;
+  final Function(Article)? onBookmark;
 
   @override
   Widget build(BuildContext context) {
@@ -67,9 +71,14 @@ class ArticleWidget extends StatelessWidget {
                       children: [
                         Text(timeago.format(article.publishedAt)),
                         const Spacer(),
-                        const Icon(
-                          Icons.bookmark,
-                          color: Colors.grey,
+                        GestureDetector(
+                          onTap: () => onBookmark?.call(article),
+                          child: Icon(
+                            Icons.bookmark,
+                            color: isBookmarked
+                                ? Theme.of(context).primaryColor
+                                : Colors.grey,
+                          ),
                         )
                       ],
                     )
