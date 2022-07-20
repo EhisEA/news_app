@@ -81,37 +81,89 @@ class _HomeViewState extends State<HomeView> {
                           AnimatedBuilder(
                             animation: widget.homeViewModel,
                             builder: (context, _) {
-                              return CustomScrollView(
-                                slivers: [
-                                  SliverToBoxAdapter(
-                                    child: Text("Top Headlines",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline5),
+                              return NotificationListener(
+                                onNotification: (Notification notification) {
+// flutter: ScrollEndNotification(depth: 0 (local), FixedScrollMetrics(0.0..[584.0]..1965.0))
+// flutter: UserScrollNotification(depth: 0 (local), FixedScrollMetrics(0.0..[584.0]..1965.0), direction: ScrollDirection.idle)
+// flutter: ScrollMetricsNotification(depth: 0 (local), FixedScrollMetrics(0.0..[584.0]..1965.0))
+//  ScrollMetricsNotification
+// flutter: ScrollUpdateNotification
+// flutter: ScrollEndNotification
+// flutter: UserScrollNotification
+                                  dynamic d = "33"; //"ormorom"
+                                  print(notification.runtimeType);
+                                  switch (d.runtimeType) {
+                                    case int:
+                                    case double:
+                                    case num:
+                                      num r = d as num;
+
+                                      r++;
+
+                                      break;
+                                    default:
+                                  }
+
+                                  // print(notification);
+                                  switch (notification.runtimeType) {
+                                    // here we would capture all scroll event
+                                    case ScrollUpdateNotification:
+                                    case ScrollEndNotification:
+                                    case UserScrollNotification:
+                                      final notificationListener =
+                                          notification as ScrollNotification;
+
+                                      if (notificationListener.metrics.pixels >
+                                          notificationListener
+                                                  .metrics.maxScrollExtent -
+                                              300) {
+                                        //Todo: our business logic for pagination
+                                        print("Paginatable");
+                                        // widget.homeViewModel.getMore();
+                                      }
+                                      break;
+                                    // here we ignore all other events
+                                    default:
+                                      break;
+                                  }
+                                  return false;
+                                },
+                                child: RefreshIndicator(
+                                  onRefresh:
+                                      widget.homeViewModel.getTopHeadlines,
+                                  child: CustomScrollView(
+                                    slivers: [
+                                      SliverToBoxAdapter(
+                                        child: Text("Top Headlines",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headline5),
+                                      ),
+                                      SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                          (context, index) {
+                                            final article = widget.homeViewModel
+                                                .topHeadlines[index];
+                                            final bool isBookmarked = widget
+                                                .homeViewModel.bookmark
+                                                .contains(article);
+                                            return ArticleWidget(
+                                              article: article,
+                                              isBookmarked: isBookmarked,
+                                              onBookmark: isBookmarked
+                                                  ? widget.homeViewModel
+                                                      .removeFromBookmark
+                                                  : widget.homeViewModel
+                                                      .addToBookmark,
+                                            ); // return Text(homeViewModel.topHeadlines[index].title);
+                                          },
+                                          childCount: widget.homeViewModel
+                                              .topHeadlines.length,
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                  SliverList(
-                                    delegate: SliverChildBuilderDelegate(
-                                      (context, index) {
-                                        final article = widget
-                                            .homeViewModel.topHeadlines[index];
-                                        final bool isBookmarked = widget
-                                            .homeViewModel.bookmark
-                                            .contains(article);
-                                        return ArticleWidget(
-                                          article: article,
-                                          isBookmarked: isBookmarked,
-                                          onBookmark: isBookmarked
-                                              ? widget.homeViewModel
-                                                  .removeFromBookmark
-                                              : widget
-                                                  .homeViewModel.addToBookmark,
-                                        ); // return Text(homeViewModel.topHeadlines[index].title);
-                                      },
-                                      childCount: widget
-                                          .homeViewModel.topHeadlines.length,
-                                    ),
-                                  )
-                                ],
+                                ),
                               );
                             },
                           ),

@@ -6,14 +6,30 @@ class HomeViewModel extends ChangeNotifier {
   final ArticleService _articleService = ArticleService();
   List<Article> topHeadlines = [];
   List<Article> bookmark = [];
+  int page = 1;
+  static const int pageLimit = 20;
 
-  getTopHeadlines() async {
-    topHeadlines = await _articleService.getTopArticles();
+  Future<void> getTopHeadlines() async {
+    page = 1;
+
+    topHeadlines =
+        await _articleService.getTopArticles(pageSize: pageLimit, page: page);
+    ++page;
     notifyListeners();
   }
 
   addToBookmark(Article article) {
     bookmark.add(article);
+    notifyListeners();
+  }
+
+  getMore() async {
+    //get more articl and add it to the current list
+    topHeadlines.addAll(
+        await _articleService.getTopArticles(pageSize: pageLimit, page: page));
+    //increase page to set current page
+    ++page;
+    //notify state
     notifyListeners();
   }
 
