@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:news_app/views/home/view_models/bookmark_view_model.dart';
 import 'package:news_app/views/home/view_models/category_view_model.dart';
 import 'package:news_app/widgets/article_widget.dart';
 
 class CategoryView extends StatelessWidget {
-  const CategoryView(
-      {Key? key, required this.category, required this.categoryViewModel})
+  CategoryView(
+      {Key? key,
+      required this.category,
+      required this.categoryViewModel,
+      required this.bookMarkViewModel})
       : super(key: key);
 
   final String category;
   final CategoryViewModel categoryViewModel;
+  final BookMarkViewmodel bookMarkViewModel;
+
+  late final listeners =
+      Listenable.merge([bookMarkViewModel, categoryViewModel]);
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: categoryViewModel,
+      animation: listeners,
       builder: (context, _) {
         return NotificationListener(
           onNotification: (Notification notification) {
@@ -47,14 +55,14 @@ class CategoryView extends StatelessWidget {
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
                       final article = categoryViewModel.articles[index];
-                      // final bool isBookmarked =
-                      // categoryViewModel.bookmark.contains(article);
+                      final bool isBookmarked =
+                          bookMarkViewModel.bookmark.contains(article);
                       return ArticleWidget(
                         article: article,
-                        // isBookmarked: isBookmarked,
-                        // onBookmark: isBookmarked
-                        //     ? widget.homeViewModel.removeFromBookmark
-                        //     : widget.homeViewModel.addToBookmark,
+                        isBookmarked: isBookmarked,
+                        onBookmark: isBookmarked
+                            ? bookMarkViewModel.removeFromBookmark
+                            : bookMarkViewModel.addToBookmark,
                       ); // return Text(homeViewModel.topHeadlines[index].title);
                     },
                     childCount: categoryViewModel.articles.length,
