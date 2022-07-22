@@ -90,19 +90,18 @@ class _HomeViewState extends State<HomeView> {
 // flutter: ScrollUpdateNotification
 // flutter: ScrollEndNotification
 // flutter: UserScrollNotification
-                                  dynamic d = "33"; //"ormorom"
-                                  print(notification.runtimeType);
-                                  switch (d.runtimeType) {
-                                    case int:
-                                    case double:
-                                    case num:
-                                      num r = d as num;
+                                  // dynamic d = "33"; //"ormorom"
+                                  // switch (d.runtimeType) {
+                                  //   case int:
+                                  //   case double:
+                                  //   case num:
+                                  //     num r = d as num;
 
-                                      r++;
+                                  //     r++;
 
-                                      break;
-                                    default:
-                                  }
+                                  //     break;
+                                  //   default:
+                                  // }
 
                                   // print(notification);
                                   switch (notification.runtimeType) {
@@ -117,9 +116,7 @@ class _HomeViewState extends State<HomeView> {
                                           notificationListener
                                                   .metrics.maxScrollExtent -
                                               300) {
-                                        //Todo: our business logic for pagination
-                                        print("Paginatable");
-                                        // widget.homeViewModel.getMore();
+                                        widget.homeViewModel.getMore();
                                       }
                                       break;
                                     // here we ignore all other events
@@ -160,7 +157,14 @@ class _HomeViewState extends State<HomeView> {
                                           childCount: widget.homeViewModel
                                               .topHeadlines.length,
                                         ),
-                                      )
+                                      ),
+                                      if (widget.homeViewModel.isLoading)
+                                        const SliverToBoxAdapter(
+                                          child: Center(
+                                            child: CircularProgressIndicator
+                                                .adaptive(),
+                                          ),
+                                        )
                                     ],
                                   ),
                                 ),

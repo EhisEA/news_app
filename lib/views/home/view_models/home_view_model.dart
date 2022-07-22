@@ -7,14 +7,18 @@ class HomeViewModel extends ChangeNotifier {
   List<Article> topHeadlines = [];
   List<Article> bookmark = [];
   int page = 1;
+  bool isLoading = false;
   static const int pageLimit = 20;
 
   Future<void> getTopHeadlines() async {
+    isLoading = true;
+    notifyListeners();
     page = 1;
 
     topHeadlines =
         await _articleService.getTopArticles(pageSize: pageLimit, page: page);
     ++page;
+    isLoading = false;
     notifyListeners();
   }
 
@@ -24,13 +28,18 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   getMore() async {
-    //get more articl and add it to the current list
-    topHeadlines.addAll(
-        await _articleService.getTopArticles(pageSize: pageLimit, page: page));
-    //increase page to set current page
-    ++page;
-    //notify state
-    notifyListeners();
+    if (!isLoading) {
+      isLoading = true;
+      notifyListeners();
+      //get more articl and add it to the current list
+      topHeadlines.addAll(await _articleService.getTopArticles(
+          pageSize: pageLimit, page: page));
+      //increase page to set current page
+      ++page;
+      //notify state
+      isLoading = false;
+      notifyListeners();
+    }
   }
 
   removeFromBookmark(Article article) {
