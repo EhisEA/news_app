@@ -14,9 +14,34 @@ void main() {
         primarySwatch: Colors.deepOrange,
         primaryColor: const Color(0xffFC821E),
       ),
-      home: HomeView(
-          homeViewModel: HomeViewModel(),
-          bookMarkViewModel: BookMarkViewmodel()),
+      home: Home(
+        bookMarkViewmodel: BookMarkViewmodel(),
+        homeViewModel: HomeViewModel(),
+        child: HomeView(
+            // homeViewModel: HomeViewModel(),
+            // bookMarkViewModel: BookMarkViewmodel()),
+            ),
+      ),
     ),
   );
+}
+
+class Home extends InheritedWidget {
+  Home(
+      {Key? key,
+      required this.bookMarkViewmodel,
+      required this.homeViewModel,
+      required Widget child})
+      : super(key: key, child: child);
+
+  HomeViewModel homeViewModel;
+  BookMarkViewmodel bookMarkViewmodel;
+  @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) {
+    return false;
+  }
+
+  static Home of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<Home>()!;
+  }
 }

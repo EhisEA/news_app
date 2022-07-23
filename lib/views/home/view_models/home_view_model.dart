@@ -9,6 +9,10 @@ class HomeViewModel extends ChangeNotifier {
   bool isLoading = false;
   static const int pageLimit = 20;
 
+  HomeViewModel() {
+    getTopHeadlines();
+  }
+
   Future<void> getTopHeadlines() async {
     isLoading = true;
     notifyListeners();

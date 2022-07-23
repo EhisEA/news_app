@@ -59,10 +59,10 @@ class CategoryView extends StatelessWidget {
                           bookMarkViewModel.bookmark.contains(article);
                       return ArticleWidget(
                         article: article,
-                        isBookmarked: isBookmarked,
-                        onBookmark: isBookmarked
-                            ? bookMarkViewModel.removeFromBookmark
-                            : bookMarkViewModel.addToBookmark,
+                        // isBookmarked: isBookmarked,
+                        // onBookmark: isBookmarked
+                        //     ? bookMarkViewModel.removeFromBookmark
+                        //     : bookMarkViewModel.addToBookmark,
                       ); // return Text(homeViewModel.topHeadlines[index].title);
                     },
                     childCount: categoryViewModel.articles.length,
